@@ -7,9 +7,25 @@
     <div class="card">
       <div class="card-body login-card-body">
         <?= $this->session->flashdata('message'); ?>
-        <h4 class="login-box-msg">Masuk</h4>
+        <h4 class="login-box-msg">Buat Akun Baru</h4>
 
-        <form action="<?= base_url('auth/doLogin') ?>" method="post">
+        <form action="<?= base_url() ?>auth/doRegister" method="post">
+          <div class="input-group mb-3">
+            <input type="text" name="nama_siswa" class="form-control" placeholder="Nama Lengkap">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-male"></span>
+              </div>
+            </div>
+          </div>
+          <div class="input-group mb-3">
+            <input type="number" name="nis" class="form-control" placeholder="Nomor Induk Sekolah (NIS)">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-address-card"></span>
+              </div>
+            </div>
+          </div>
           <div class="input-group mb-3">
             <input type="email" name="email" class="form-control" placeholder="Email">
             <div class="input-group-append">
@@ -28,11 +44,11 @@
           </div>
           <div class="row">
             <div class="col-4">
-              <button type="submit" class="btn btn-primary btn-block">Masuk</button>
+                <button type="submit" class="btn btn-primary btn-block">Daftar</button>
             </div>
             <!-- /.col -->
             <div class="col-8 text-right">
-              Belum punya akun? <a href="<?= base_url() ?>auth/register"><br> <b>Daftar Disini</b></a>
+              Sudah punya akun? <a href="<?= base_url() ?>auth/login"><br> <b>Masuk Disini</b></a>
             </div>
             <!-- /.col -->
           </div>

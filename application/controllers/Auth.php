@@ -26,12 +26,17 @@ class Auth extends CI_Controller
 	 */
 	public function index()
 	{
-		$data['page'] = 'Login';
-		$data['header'] = $this->load->view('partials/header', $data);
-		$data['footer'] = $this->load->view('partials/footer');
-		$data['content'] = $this->load->view('auth/login');
+		if ($this->session->userdata('isLoggedIn')) {
+			redirect('dashboard');
+		}
 
-		$this->load->view('base', $data);
+		$data['page'] = 'Login';
+		$data['header'] = $this->load->view('partials/header', $data, TRUE);
+		$data['footer'] = '';
+		$data['js'] = $this->load->view('partials/js', '', TRUE);
+		$data['content'] = $this->load->view('auth/login', '', TRUE);
+
+		$this->load->view('base', $data, FALSE);
 	}
 
 	/**
@@ -47,20 +52,48 @@ class Auth extends CI_Controller
 		{
 			// check to see if the user is logging in
 			// check for "remember me"
-			$remember = (bool)$this->input->post('remember');
+			// $remember = (bool)$this->input->post('remember');
+			$email = $this->input->post('email');
+			$password = $this->input->post('password');
 
-			if ($this->ion_auth->login($this->input->post('identity'), $this->input->post('password'), $remember))
+			$result = $this->User_model->login($email, $password);
+
+			if ($result == 1)
 			{
 				//if the login is successful
 				//redirect them back to the home page
-				$this->session->set_flashdata('message', $this->ion_auth->messages());
-				redirect('/', 'refresh');
+				$result = $this->User_model->getUserByEmail($email);
+
+				// $this->debug($result);
+				$arr = [];
+				if ($result->role == "guru") {
+					$arr = [
+						'email' => $this->input->post('email'),
+						'id' => $result->id_guru,
+						'nama' => $result->nama_guru,
+						'isLoggedIn' => TRUE
+					];
+				}
+				else if ($result->role == "siswa"){
+					$arr = [
+						'email' => $this->input->post('email'),
+						'id' => $result->id_siswa,
+						'nama' => $result->nama_siswa,
+						'isLoggedIn' => TRUE
+					];
+				}
+
+				$this->session->set_userdata($arr);
+				redirect('/dashboard', 'refresh');
 			}
-			else
+			else if ($result == 2)
 			{
 				// if the login was un-successful
 				// redirect them back to the login page
-				$this->session->set_flashdata('message', $this->ion_auth->errors());
+				$this->session->set_flashdata('message', $this->getAlert('Password salah!', 'danger'));
+				redirect('auth/login', 'refresh'); // use redirects instead of loading views for compatibility with MY_Controller libraries
+			} else {
+				$this->session->set_flashdata('message', $this->getAlert("Email tidak ditemukan", 'danger'));
 				redirect('auth/login', 'refresh'); // use redirects instead of loading views for compatibility with MY_Controller libraries
 			}
 		}
@@ -68,37 +101,92 @@ class Auth extends CI_Controller
 		{
 			// the user is not logging in so display the login page
 			// set the flash data error message if there is one
-			$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
-
-			$this->data['identity'] = [
-				'name' => 'identity',
-				'id' => 'identity',
-				'type' => 'text',
-				'value' => $this->form_validation->set_value('identity'),
-			];
-
-			$this->data['password'] = [
-				'name' => 'password',
-				'id' => 'password',
-				'type' => 'password',
-			];
-
-			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'login', $this->data);
+			$this->session->set_flashdata('message', $this->getAlert("Cek kembali inputan Anda", 'danger'));
+			redirect('auth', 'refresh');
 		}
 	}
 
 	/**
 	 * Log the user out
 	 */
-	public function logout()
+	public function doLogout()
 	{
-		$this->data['title'] = "Logout";
+		$arr = [
+			'email',
+			'nama',
+			'id',
+			'isLoggedIn'
+		];
+		$this->session->unset_userdata($arr);
+		$this->session->sess_destroy();
 
-		// log the user out
-		$this->ion_auth->logout();
+        ob_clean();
+		// $this->debug($this->session->userdata());
 
 		// redirect them to the login page
-		redirect('auth/login', 'refresh');
+		$this->session->set_flashdata('message', $this->getAlert("Berhasil logout", 'success'));
+		redirect('auth', 'refresh');
+	}
+
+	public function register()
+	{
+		$data['page'] = 'Daftar';
+		$data['header'] = $this->load->view('partials/header', $data, TRUE);
+		$data['footer'] = '';
+		$data['js'] = $this->load->view('partials/js', '', TRUE);
+		$data['content'] = $this->load->view('auth/register', '', TRUE);
+
+		$this->load->view('base', $data, FALSE);
+	}
+
+	public function doRegister()
+	{
+		$data = $this->input->post();
+
+		$data['password'] = md5($data['password']);
+
+		$this->form_validation->set_rules('nama_siswa', 'Nama Lengkap', 'required');
+		$this->form_validation->set_rules('nis', 'Nomor Induk Siswa', 'required');
+		$this->form_validation->set_rules('email', 'Email', 'required');
+		$this->form_validation->set_rules('password', 'Password', 'required');
+
+		if ($this->form_validation->run() == TRUE)
+		{
+			$user = $this->User_model->insert($data);
+			$siswa = $this->User_model->insertSiswa($data);
+			
+			if ($siswa && $user) {
+				$this->session->set_flashdata('message', $this->getAlert("Berhasil mendaftar. Silakan login", 'success'));
+				redirect('auth/login', 'refresh'); // use redirects instead of loading views for compatibility with MY_Controller libraries
+			} else {
+				$this->session->set_flashdata('message', $this->getAlert("NIS atau Email sudah digunakan", 'danger'));
+				redirect('auth/register', 'refresh'); // use redirects instead of loading views for compatibility with MY_Controller libraries
+			}
+		}
+		else
+		{
+			// $this->debug(validation_errors());
+			$this->session->set_flashdata('message', $this->getAlert(validation_errors(), 'danger'));
+			redirect('auth/register', 'refresh'); // use redirects instead of loading views for compatibility with MY_Controller libraries
+		}
+
+		// $this->debug($data);
+	}
+
+    public function debug($var)
+    {
+        header('Content-Type: application/json');
+        echo json_encode($var);
+    }
+
+	public function getAlert($message, $type)
+	{
+		return '
+			<div class="alert alert-'.$type.' alert-dismissible">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				'.$message.'
+			</div>
+		';
 	}
 
 	/**

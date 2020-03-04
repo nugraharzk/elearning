@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <?php $header ?>
+    <?= $header ?>
 </head>
-<body>
+<body class="hold-transition sidebar-mini layout-navbar-fixed layout-fixed">
     
-    <?php $content ?>
+    <div class="wrapper">
+        <?= $content ?>
+        
+        <?= $footer ?>
+    </div>
 
-    <?php $footer ?>
+    <?= $js ?>
 
 </body>
 </html>
