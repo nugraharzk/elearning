@@ -73,12 +73,12 @@
           <div class="card-body">
             <form action="<?= base_url() ?>kelas/tambah" method="post">
               <div class="row">
-                <div class="col-sm-3">
-                  <div class="text-left">
-                    <h5>Masukkan Kode : </h5>
+                <div class="col-sm-2">
+                  <div class="form-group">
+                    <label for="kode">Masukkan kode</label>
                   </div>
                 </div>
-                <div class="col-sm-7">
+                <div class="col-sm-8">
                   <div class="form-group">
                     <input type="text" name="kode" id="kode" class="form-control"/>
                   </div>

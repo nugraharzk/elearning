@@ -14,8 +14,8 @@
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="<?= base_url() ?>"><i class="fas fa-home"></i> Dashboard</a></li>
-              <li class="breadcrumb-item active"><i class="fas fa-school"></i> Kelas</li>
+              <li class="breadcrumb-item"><a href="<?= base_url('kelas') ?>"><i class="fas fa-school"></i> Kelas</a></li>
+              <li class="breadcrumb-item active"><i class="fas fa-book"></i> <?= $kelas->nama_mata_pelajaran ?></li>
             </ol>
           </div>
         </div>
@@ -31,7 +31,7 @@
               <div class="card-header">
                 <h3 class="card-title">
                   <i class="fas fa-book"></i>
-                  <?= $kelas->nama_mata_pelajaran ?>
+                  <?= $kelas->nama_mata_pelajaran ?> | Guru : <i class="fas fa-teacher"></i><?= $kelas->nama_guru ?>
                 </h3>
               </div>
               <div class="card-body">
@@ -39,13 +39,12 @@
                   <?php if ($bab) { ?>
                   <?php foreach ($bab as $item) { ?>
                   <div class="col-md-12">
-                    <a href="<?= base_url() ?>materi/<?= $item->id_bab_pelajaran ?>">
+                    <a href="<?= base_url() ?>materi/<?= $item->id_bab_pelajaran ?>/1">
                       <div class="card card-success">
                         <div class="card-header">
                         </div>
                         <div class="card-body">
-                          <h5><?= $item->nama ?></h5>
-                          <!-- <p>Guru : <?= $item->nama_guru ?></p> -->
+                          <h5><?= $item->nama_bab_pelajaran ?></h5>
                         </div>
                       </div>
                     </a>

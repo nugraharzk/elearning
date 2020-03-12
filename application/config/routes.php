@@ -15,6 +15,9 @@ $route['kelas'] = 'Kelas/index';
 $route['kelas/tambah'] = 'Kelas/tambahKelas';
 $route['kelas/(:any)'] = 'Kelas/detail/$1';
 
+// Materi
+$route['materi/(:any)/(:any)'] = 'Materi/detail/$1/$2';
+
 // Default Routes
 $route['default_controller'] = 'Dashboard';
 $route['404_override'] = '';

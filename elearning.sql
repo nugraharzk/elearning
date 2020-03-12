@@ -11,7 +11,7 @@
  Target Server Version : 100410
  File Encoding         : 65001
 
- Date: 04/03/2020 12:06:05
+ Date: 11/03/2020 20:21:22
 */
 
 SET NAMES utf8mb4;
@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `bab_pelajaran`;
 CREATE TABLE `bab_pelajaran`  (
   `id_bab_pelajaran` int(11) NOT NULL AUTO_INCREMENT,
   `id_mata_pelajaran` int(11) NOT NULL,
-  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nama_bab_pelajaran` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `created_at` datetime(6) NOT NULL DEFAULT current_timestamp(6) ON UPDATE CURRENT_TIMESTAMP(6),
   PRIMARY KEY (`id_bab_pelajaran`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
@@ -45,9 +45,9 @@ INSERT INTO `bab_pelajaran` VALUES (6, 5, 'Arduino', '2020-03-03 23:06:46.565613
 DROP TABLE IF EXISTS `guru`;
 CREATE TABLE `guru`  (
   `id_guru` int(11) NOT NULL AUTO_INCREMENT,
-  `nip` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `nama_guru` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nip` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nama_guru` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id_guru`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
@@ -70,8 +70,8 @@ CREATE TABLE `kelas`  (
   PRIMARY KEY (`id_kelas`) USING BTREE,
   INDEX `fk_mata_pelajaran_kelas`(`id_mata_pelajaran`) USING BTREE,
   INDEX `fk_id_guru_kelas`(`id_guru`) USING BTREE,
-  CONSTRAINT `fk_mata_pelajaran_kelas` FOREIGN KEY (`id_mata_pelajaran`) REFERENCES `mata_pelajaran` (`id_mata_pelajaran`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_id_guru_kelas` FOREIGN KEY (`id_guru`) REFERENCES `guru` (`id_guru`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_id_guru_kelas` FOREIGN KEY (`id_guru`) REFERENCES `guru` (`id_guru`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_mata_pelajaran_kelas` FOREIGN KEY (`id_mata_pelajaran`) REFERENCES `mata_pelajaran` (`id_mata_pelajaran`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -96,7 +96,7 @@ CREATE TABLE `kontrak`  (
   INDEX `fk_id_kelas_kontrak`(`id_kelas`) USING BTREE,
   CONSTRAINT `fk_id_kelas_kontrak` FOREIGN KEY (`id_kelas`) REFERENCES `kelas` (`id_kelas`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_id_siswa_kontrak` FOREIGN KEY (`id_siswa`) REFERENCES `siswa` (`id_siswa`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 22 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of kontrak
@@ -106,6 +106,7 @@ INSERT INTO `kontrak` VALUES (18, 7, 5, '2020-03-04 11:32:33.270798', '2020-03-0
 INSERT INTO `kontrak` VALUES (19, 7, 6, '2020-03-04 11:33:12.993486', '2020-03-04 11:33:12.993486');
 INSERT INTO `kontrak` VALUES (20, 7, 7, '2020-03-04 11:33:58.945546', '2020-03-04 11:33:58.945546');
 INSERT INTO `kontrak` VALUES (21, 1, 7, '2020-03-04 11:59:28.070681', '2020-03-04 11:59:28.070681');
+INSERT INTO `kontrak` VALUES (22, 1, 6, '2020-03-08 23:16:28.358567', '2020-03-08 23:16:28.358567');
 
 -- ----------------------------
 -- Table structure for login_attempts
@@ -125,7 +126,7 @@ CREATE TABLE `login_attempts`  (
 DROP TABLE IF EXISTS `mata_pelajaran`;
 CREATE TABLE `mata_pelajaran`  (
   `id_mata_pelajaran` int(11) NOT NULL AUTO_INCREMENT,
-  `nama_mata_pelajaran` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nama_mata_pelajaran` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id_mata_pelajaran`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
@@ -143,13 +144,20 @@ INSERT INTO `mata_pelajaran` VALUES (5, 'Robotika');
 -- ----------------------------
 DROP TABLE IF EXISTS `materi_pelajaran`;
 CREATE TABLE `materi_pelajaran`  (
-  `id_materi_pelajaran` int(11) NOT NULL,
+  `id_materi_pelajaran` int(11) NOT NULL AUTO_INCREMENT,
   `id_bab_pelajaran` int(11) NOT NULL,
   `materi` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `jenis_materi` int(11) NOT NULL,
-  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `path` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id_materi_pelajaran`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of materi_pelajaran
+-- ----------------------------
+INSERT INTO `materi_pelajaran` VALUES (1, 1, '<p>Lorem ipsum dolor sit amet</p>', 1, NULL);
+INSERT INTO `materi_pelajaran` VALUES (2, 2, '<p>Lorem ipsum dolor sit amet</p>', 1, NULL);
+INSERT INTO `materi_pelajaran` VALUES (3, 3, '<p>Lorem ipsum dolor sit amet</p>', 2, NULL);
 
 -- ----------------------------
 -- Table structure for role
@@ -157,7 +165,7 @@ CREATE TABLE `materi_pelajaran`  (
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role`  (
   `id_role` int(11) NOT NULL AUTO_INCREMENT,
-  `role` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `role` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id_role`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
@@ -174,9 +182,9 @@ INSERT INTO `role` VALUES (3, 'siswa');
 DROP TABLE IF EXISTS `siswa`;
 CREATE TABLE `siswa`  (
   `id_siswa` int(11) NOT NULL AUTO_INCREMENT,
-  `nis` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `nama_siswa` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nis` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nama_siswa` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id_siswa`) USING BTREE,
   UNIQUE INDEX `nis_unique`(`nis`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
@@ -196,8 +204,8 @@ INSERT INTO `siswa` VALUES (7, '321213321123', 'Developer Handal', 'nugraharizki
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`  (
   `id_user` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `role_id` int(11) NOT NULL,
   `created_at` datetime(6) NULL DEFAULT current_timestamp(6) ON UPDATE CURRENT_TIMESTAMP(6),
   PRIMARY KEY (`id_user`) USING BTREE,
