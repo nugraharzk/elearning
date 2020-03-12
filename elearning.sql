@@ -11,7 +11,7 @@
  Target Server Version : 100410
  File Encoding         : 65001
 
- Date: 11/03/2020 20:21:22
+ Date: 12/03/2020 10:47:32
 */
 
 SET NAMES utf8mb4;
@@ -150,14 +150,15 @@ CREATE TABLE `materi_pelajaran`  (
   `jenis_materi` int(11) NOT NULL,
   `path` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id_materi_pelajaran`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of materi_pelajaran
 -- ----------------------------
-INSERT INTO `materi_pelajaran` VALUES (1, 1, '<p>Lorem ipsum dolor sit amet</p>', 1, NULL);
+INSERT INTO `materi_pelajaran` VALUES (1, 1, '<h1>OKEEEE</h1><br/><p>Lorem ipsum dolor sit amet</p>', 1, NULL);
 INSERT INTO `materi_pelajaran` VALUES (2, 2, '<p>Lorem ipsum dolor sit amet</p>', 1, NULL);
 INSERT INTO `materi_pelajaran` VALUES (3, 3, '<p>Lorem ipsum dolor sit amet</p>', 2, NULL);
+INSERT INTO `materi_pelajaran` VALUES (4, 1, '', 2, 'video.mkv');
 
 -- ----------------------------
 -- Table structure for role
